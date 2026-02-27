@@ -1,5 +1,16 @@
+DROP TABLE IF EXISTS feedback;
 DROP TABLE IF EXISTS sales;
 DROP TABLE IF EXISTS sales_raw;
+
+CREATE TABLE feedback (
+    id SERIAL PRIMARY KEY,
+    campaign_id VARCHAR(100),
+    username VARCHAR(100),
+    comment TEXT,
+    sentiment VARCHAR(20),
+    feedback_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 CREATE TABLE sales_raw (
     id SERIAL PRIMARY KEY,
