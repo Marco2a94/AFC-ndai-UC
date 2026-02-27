@@ -30,6 +30,10 @@ CREATE TABLE sales (
     country VARCHAR(100),
     product VARCHAR(100),
     quantity INT,
-    unit_price FLOAT,
-    total_amount FLOAT
+    unit_price NUMERIC(10,2),
+    total_amount NUMERIC(10,2)
 );
+
+CREATE INDEX idx_feedback_campaign ON feedback(campaign_id);
+CREATE INDEX idx_sales_date ON sales(sale_date);
+CREATE INDEX idx_sales_country ON sales(country);
