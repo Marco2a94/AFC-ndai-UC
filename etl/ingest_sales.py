@@ -2,10 +2,6 @@ import pandas as pd
 import sys
 from db_utils import get_connection
 
-def truncate_tables(cursor):
-    cursor.execute("TRUNCATE TABLE sales_raw RESTART IDENTITY;")
-    cursor.execute("TRUNCATE TABLE sales RESTART IDENTITY;")
-
 def load_raw(df, cursor):
     for _, row in df.iterrows():
         cursor.execute(
@@ -55,9 +51,6 @@ def ingest_sales(csv_path):
 
     conn = get_connection()
     cursor = conn.cursor()
-
-    print("Cleaning previous data...")
-    truncate_tables(cursor)
 
     print("Loading raw layer...")
     load_raw(df, cursor)

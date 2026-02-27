@@ -26,7 +26,6 @@ def ingest_feedback(json_path):
     cursor = conn.cursor()
 
     print("Cleaning existing feedback data...")
-    cursor.execute("TRUNCATE TABLE feedback RESTART IDENTITY;")
 
     print("Inserting feedback records...")
 
