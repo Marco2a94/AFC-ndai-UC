@@ -24,6 +24,8 @@ services:
   metabase:
     image: metabase/metabase:latest
     container_name: afc_metabase
+    volumes:
+      - metabase_data:/metabase-data
     depends_on:
       - db
     ports:
@@ -31,3 +33,4 @@ services:
 
 volumes:
   postgres_data:
+  metabase_data:
