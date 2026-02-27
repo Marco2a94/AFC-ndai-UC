@@ -17,10 +17,11 @@ class Feedback(BaseModel):
 
 def get_connection():
     return psycopg2.connect(
-        host="localhost",
-        database=os.getenv("POSTGRES_DB"),
+        host=os.getenv("POSTGRES_HOST"),
+        port=os.getenv("POSTGRES_PORT"),
         user=os.getenv("POSTGRES_USER"),
-        password=os.getenv("POSTGRES_PASSWORD")
+        password=os.getenv("POSTGRES_PASSWORD"),
+        dbname=os.getenv("POSTGRES_DB"),
     )
 
 def analyze_sentiment(text: str) -> str:
