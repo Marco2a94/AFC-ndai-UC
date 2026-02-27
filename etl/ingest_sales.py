@@ -48,7 +48,17 @@ def ingest_sales(csv_path):
     print("Reading CSV...")
     df = pd.read_csv(csv_path)
     df.columns = df.columns.str.strip().str.lower()
+    
+    df["quantity"] = pd.to_numeric(df["quantity"], errors="coerce")
+    df["unit_price"] = pd.to_numeric(df["unit_price"], errors="coerce")
+    df["total_amount"] = pd.to_numeric(df["total_amount"], errors="coerce")
 
+    df["sale_date"] = pd.to_datetime(df["sale_date"], errors="coerce")
+
+    # Drop invalid rows
+    df = df.dropna()
+
+    print(f"Valid rows after cleaning: {len(df)}")
     conn = get_connection()
     cursor = conn.cursor()
 
