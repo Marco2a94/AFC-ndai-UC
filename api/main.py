@@ -11,8 +11,9 @@ app = FastAPI()
 
 class Feedback(BaseModel):
     campaign_id: str
-    customer_id: str
+    username: str
     comment: str
+    feedback_date: str
 
 def get_connection():
     return psycopg2.connect(
@@ -42,14 +43,23 @@ def create_feedback(feedback: Feedback):
 
     cursor.execute(
         """
-        INSERT INTO feedback (campaign_id, customer_id, comment, sentiment)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO feedback (campaign_id, username, comment, sentiment, feedback_date)
+        VALUES (%s, %s, %s, %s, %s)
         """,
-        (feedback.campaign_id, feedback.customer_id, feedback.comment, sentiment)
+        (
+            feedback.campaign_id,
+            feedback.username,
+            feedback.comment,
+            sentiment,
+            feedback.feedback_date
+        )
     )
 
     conn.commit()
     cursor.close()
     conn.close()
 
-    return {"status": "feedback stored", "sentiment": sentiment}
+    return {
+        "status": "feedback stored",
+        "sentiment": sentiment
+    }
