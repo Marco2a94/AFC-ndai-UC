@@ -5,15 +5,21 @@ import os
 from dotenv import load_dotenv
 from textblob import TextBlob
 
+from datetime import date
+
 load_dotenv()
 
-app = FastAPI()
+app = FastAPI(
+    title="AFC Feedback API",
+    description="REST API to collect campaign feedback and perform sentiment analysis",
+    version="1.0.0"
+)
 
 class Feedback(BaseModel):
     campaign_id: str
     username: str
     comment: str
-    feedback_date: str
+    feedback_date: date
 
 def get_connection():
     return psycopg2.connect(
@@ -35,32 +41,42 @@ def analyze_sentiment(text: str) -> str:
     else:
         return "neutral"
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 @app.post("/feedback")
 def create_feedback(feedback: Feedback):
-    conn = get_connection()
-    cursor = conn.cursor()
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
 
-    sentiment = analyze_sentiment(feedback.comment)
+        sentiment = analyze_sentiment(feedback.comment)
 
-    cursor.execute(
-        """
-        INSERT INTO feedback (campaign_id, username, comment, sentiment, feedback_date)
-        VALUES (%s, %s, %s, %s, %s)
-        """,
-        (
-            feedback.campaign_id,
-            feedback.username,
-            feedback.comment,
-            sentiment,
-            feedback.feedback_date
+        cursor.execute(
+            """
+            INSERT INTO feedback 
+            (campaign_id, username, comment, sentiment, feedback_date)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (
+                feedback.campaign_id,
+                feedback.username,
+                feedback.comment,
+                sentiment,
+                feedback.feedback_date
+            )
         )
-    )
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        conn.commit()
+        return {
+            "status": "feedback stored",
+            "sentiment": sentiment
+        }
 
-    return {
-        "status": "feedback stored",
-        "sentiment": sentiment
-    }
+    except Exception as e:
+        return {"error": str(e)}
+
+    finally:
+        cursor.close()
+        conn.close()
