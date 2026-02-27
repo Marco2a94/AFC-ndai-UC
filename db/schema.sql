@@ -14,20 +14,22 @@ CREATE TABLE feedback (
 
 CREATE TABLE sales_raw (
     id SERIAL PRIMARY KEY,
-    raw_date TEXT,
+    raw_username TEXT,
+    raw_sale_date TEXT,
     raw_country TEXT,
     raw_product TEXT,
-    raw_revenue TEXT,
-    raw_margin TEXT,
-    raw_volume TEXT
+    raw_quantity TEXT,
+    raw_unit_price TEXT,
+    raw_total_amount TEXT
 );
 
 CREATE TABLE sales (
     id SERIAL PRIMARY KEY,
-    date DATE,
+    username VARCHAR(100),
+    sale_date DATE,
     country VARCHAR(100),
     product VARCHAR(100),
-    revenue FLOAT,
-    margin FLOAT,
-    volume INT
+    quantity INT,
+    unit_price FLOAT,
+    total_amount FLOAT
 );
