@@ -51,9 +51,13 @@ docker-compose down
 
 To ingest sales data:
 
-docker exec -it afc_api python ingest_sales.py /path/to/file.csv
+docker exec -it afc_etl python /app/ingest_sales.py /app/data/raw/sales_data.csv
 
 ### Feedback (REST API)
+
+To ingest feedback data"
+
+docker exec -it afc_etl python /app/ingest_feedback.py /app/data/raw/feedback_data.json
 
 Send feedback via POST request:
 
