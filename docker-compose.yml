@@ -20,7 +20,16 @@ services:
       - db
     ports:
       - "8000:8000"
-
+  etl:
+    build: ./etl
+    container_name: afc_etl
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./data:/app/data
+      
   metabase:
     image: metabase/metabase:latest
     container_name: afc_metabase
@@ -30,11 +39,6 @@ services:
       - db
     ports:
       - "3000:3000"
-
-  etl:
-    build: ./etl
-    depends_on:
-      - db
 
 volumes:
   postgres_data:
