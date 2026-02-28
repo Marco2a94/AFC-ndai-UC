@@ -25,14 +25,16 @@ CREATE TABLE sales_raw (
 
 CREATE TABLE sales (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(100),
-    sale_date DATE,
-    country VARCHAR(100),
-    product VARCHAR(100),
-    quantity INT,
-    unit_price NUMERIC(10,2),
-    total_amount NUMERIC(10,2)
+    username TEXT NOT NULL,
+    sale_date DATE NOT NULL,
+    country TEXT NOT NULL,
+    product TEXT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price FLOAT NOT NULL,
+    total_amount FLOAT NOT NULL,
+    CONSTRAINT unique_sale UNIQUE (username, sale_date, country, product)
 );
+
 
 CREATE INDEX idx_feedback_campaign ON feedback(campaign_id);
 CREATE INDEX idx_sales_date ON sales(sale_date);
