@@ -2,6 +2,24 @@ import pandas as pd
 import sys
 from db_utils import get_connection
 
+import logging
+
+EXPECTED_COLUMNS = {
+    "username",
+    "sale_date",
+    "country",
+    "product",
+    "quantity",
+    "unit_price",
+    "total_amount"
+}
+
+logging.basicConfig(
+    filename="etl_errors.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 def load_raw(df, cursor):
     for _, row in df.iterrows():
         cursor.execute(
@@ -49,6 +67,14 @@ def ingest_sales(csv_path):
     df = pd.read_csv(csv_path)
     df.columns = df.columns.str.strip().str.lower()
     
+    missing_columns = EXPECTED_COLUMNS - set(df.columns)
+
+    if missing_columns:
+        error_msg = f"Missing required columns: {missing_columns}"
+        logging.error(error_msg)
+        raise ValueError(error_msg)
+
+
     df["quantity"] = pd.to_numeric(df["quantity"], errors="coerce")
     df["unit_price"] = pd.to_numeric(df["unit_price"], errors="coerce")
     df["total_amount"] = pd.to_numeric(df["total_amount"], errors="coerce")
