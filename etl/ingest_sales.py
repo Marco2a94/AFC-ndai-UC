@@ -59,7 +59,9 @@ def transform_to_clean(cursor):
             raw_quantity::INT,
             raw_unit_price::FLOAT,
             raw_total_amount::FLOAT
-        FROM sales_raw;
+        FROM sales_raw
+        ON CONFLICT (username, sale_date, country, product)
+        DO NOTHING;
     """)
 
 def ingest_sales(csv_path):
