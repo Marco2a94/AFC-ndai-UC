@@ -1,6 +1,6 @@
 import pandas as pd
 import sys
-from db_utils import get_connection
+from etl.db_utils import get_connection
 from psycopg2.extras import execute_batch
 import logging
 
