@@ -91,7 +91,7 @@ docker-compose down
 ### Sales Data (Batch ETL)
 
 ```bash
-docker exec -it afc_etl python /app/ingest_sales.py /app/data/raw/sales_data.csv
+docker exec -it afc_etl python /app/etl/ingest_sales.py /app/data/raw/sales_data.csv
 ```
 
 Features:
@@ -105,6 +105,10 @@ Features:
 ---
 
 ### Feedback (REST API – Streaming)
+
+```bash
+docker exec -it afc_etl python /app/etl/ingest_feedback.py /app/data/raw/feedback_data.json
+```
 
 POST `/feedback`
 
