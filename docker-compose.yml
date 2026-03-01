@@ -25,7 +25,9 @@ services:
       - "8000:8000"
   
   etl:
-    build: ./etl
+    build:
+      context: .
+      dockerfile: etl/Dockerfile
     container_name: afc_etl
     env_file:
       - .env
@@ -35,14 +37,16 @@ services:
       - ./data:/app/data
       
   metabase:
-    image: metabase/metabase:v0.49.6
+    image: metabase/metabase:latest
     container_name: afc_metabase
+    environment:
+      MB_DB_FILE: /metabase-data/metabase.db
     volumes:
       - metabase_data:/metabase-data
-    depends_on:
-      - db
     ports:
       - "3000:3000"
+    depends_on:
+      - db
   
   test:
     build:
