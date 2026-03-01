@@ -47,6 +47,9 @@ def health():
 
 @app.post("/feedback")
 def create_feedback(feedback: Feedback):
+    conn = None
+    cursor = None
+
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -55,7 +58,7 @@ def create_feedback(feedback: Feedback):
 
         cursor.execute(
             """
-            INSERT INTO feedback 
+            INSERT INTO feedback
             (campaign_id, username, comment, sentiment, feedback_date)
             VALUES (%s, %s, %s, %s, %s)
             """,
@@ -69,6 +72,7 @@ def create_feedback(feedback: Feedback):
         )
 
         conn.commit()
+
         return {
             "status": "feedback stored",
             "sentiment": sentiment
@@ -78,5 +82,7 @@ def create_feedback(feedback: Feedback):
         return {"error": str(e)}
 
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
