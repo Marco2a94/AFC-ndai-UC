@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 from db_utils import get_connection
-
+from psycopg2.extras import execute_batch
 import logging
 
 EXPECTED_COLUMNS = {
@@ -21,24 +21,20 @@ logging.basicConfig(
 )
 
 def load_raw(df, cursor):
-    for _, row in df.iterrows():
-        cursor.execute(
-            """
-            INSERT INTO sales_raw
-            (raw_username, raw_sale_date, raw_country, raw_product,
-             raw_quantity, raw_unit_price, raw_total_amount)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """,
-            (
-                str(row["username"]),
-                str(row["sale_date"]),
-                str(row["country"]),
-                str(row["product"]),
-                str(row["quantity"]),
-                str(row["unit_price"]),
-                str(row["total_amount"])
-            )
-        )
+
+    records = list(df.itertuples(index=False, name=None))
+
+    execute_batch(
+        cursor,
+        """
+        INSERT INTO sales_raw
+        (raw_username, raw_sale_date, raw_country, raw_product,
+         raw_quantity, raw_unit_price, raw_total_amount)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """,
+        records,
+        page_size=1000
+    )
 
 def transform_to_clean(cursor):
     cursor.execute("""
@@ -59,7 +55,9 @@ def transform_to_clean(cursor):
             raw_quantity::INT,
             raw_unit_price::FLOAT,
             raw_total_amount::FLOAT
-        FROM sales_raw;
+        FROM sales_raw
+        ON CONFLICT (username, sale_date, country, product)
+        DO NOTHING;
     """)
 
 def ingest_sales(csv_path):
