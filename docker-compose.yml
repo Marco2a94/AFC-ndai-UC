@@ -1,18 +1,57 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:15
     container_name: afc_postgres
     restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+
+    container_name: afc_api
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+  
+  etl:
+    build: ./etl
+    container_name: afc_etl
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./data:/app/data
+      
+  metabase:
+    image: metabase/metabase:v0.49.6
+    container_name: afc_metabase
+    volumes:
+      - metabase_data:/metabase-data
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+  
+  test:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: pytest
+    depends_on:
+      - db
+      
 volumes:
   postgres_data:
+  metabase_data:
