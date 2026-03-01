@@ -45,6 +45,20 @@ To stop the services:
 
 docker-compose down
 
+## Metabase Dashboard Restore
+
+Dashboards are pre-configured.
+
+To restore them:
+
+1. Run docker-compose up
+2. Execute:
+
+docker run --rm -v afc-ndai-uc_metabase_data:/volume -v ${PWD}:/backup alpine sh -c "cd /volume && tar xzf /backup/metabase_backup.tar.gz"
+
+3. Restart Metabase container:
+docker restart afc_metabase
+
 ## Data Ingestion
 
 ### Sales Data (Batch ETL)

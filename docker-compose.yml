@@ -31,7 +31,7 @@ services:
       - ./data:/app/data
       
   metabase:
-    image: metabase/metabase:latest
+    image: metabase/metabase:v0.49.6
     container_name: afc_metabase
     volumes:
       - metabase_data:/metabase-data
