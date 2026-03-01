@@ -25,7 +25,9 @@ services:
       - "8000:8000"
   
   etl:
-    build: ./etl
+    build:
+      context: .
+        dockerfile: etl/Dockerfile
     container_name: afc_etl
     env_file:
       - .env
