@@ -12,7 +12,10 @@ services:
       - ./db:/docker-entrypoint-initdb.d
 
   api:
-    build: ./api
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+
     container_name: afc_api
     env_file:
       - .env
@@ -20,6 +23,7 @@ services:
       - db
     ports:
       - "8000:8000"
+  
   etl:
     build: ./etl
     container_name: afc_etl
@@ -39,7 +43,15 @@ services:
       - db
     ports:
       - "3000:3000"
-
+  
+  test:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    command: pytest
+    depends_on:
+      - db
+      
 volumes:
   postgres_data:
   metabase_data:

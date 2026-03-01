@@ -1,7 +1,7 @@
 import json
 import sys
 from textblob import TextBlob
-from db_utils import get_connection
+from etl.db_utils import get_connection
 
 
 def analyze_sentiment(text: str) -> str:
