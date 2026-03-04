@@ -58,8 +58,8 @@ Create a `.env` file at the root:
 ``` env
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_password
+POSTGRES_USER=afc_user
+POSTGRES_PASSWORD=afc_password
 POSTGRES_DB=afc_db
 ```
 
